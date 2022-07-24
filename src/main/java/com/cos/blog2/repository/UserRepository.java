@@ -13,7 +13,8 @@ public interface UserRepository extends JpaRepository<User, Integer>{
 	//JPA Naming 전략
 	
 	// SELECT * FROM user WHERE username = 파라미터1  AND password = 파라미터2;
-	User findByUsernameAndPassword(String username, String password);
+	//스프링 시큐리티 로그인 하려고 주석처리
+	//User findByUsernameAndPassword(String username, String password);
 	
 	
 	// UserRepository.login 을 하면 아래 쿼리가 실행되고 리턴은 User 객체로 해줌!

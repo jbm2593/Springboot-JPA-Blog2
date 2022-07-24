@@ -19,8 +19,9 @@ public class UserService {
 			userRepository.save(user);
 	}
 	
-	@Transactional(readOnly = true) //Select 할 떄 트랜잭션 시작, 서비스 종료시에 트랜잭션 종료 (정합성)
-	public User 로그인(User user) {
-			return userRepository.findByUsernameAndPassword(user.getUsername(),user.getPassword());
-	}
+//스프링 시큐리티 로그인 하려고 주석처리
+//	@Transactional(readOnly = true) //Select 할 떄 트랜잭션 시작, 서비스 종료시에 트랜잭션 종료 (정합성)
+//	public User 로그인(User user) {
+//			return userRepository.findByUsernameAndPassword(user.getUsername(),user.getPassword());
+//	}
 }

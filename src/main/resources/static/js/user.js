@@ -3,6 +3,9 @@ let index = {
 		$("#btn-save").on("click", () => { //function(){} 대신에 ()=>{}는 this를 바인딩하기 위해서이다!
 			this.save();
 		});
+		$("#btn-update").on("click", () => { //function(){} 대신에 ()=>{}는 this를 바인딩하기 위해서이다!
+			this.update();
+		});
 		//스프링 시큐리티로 로그인하려고 아래 주석처리
 		//$("#btn-login").on("click", () => { //function(){} 대신에 ()=>{}는 this를 바인딩하기 위해서이다!
 			//this.login();
@@ -31,6 +34,29 @@ let index = {
 			dataType:"json" //요청을 서버로해서 응답이 왔을 때 기본적으로 모든것이 String(문자열)임. 생긴게 json이라면 => javascriptt 오브젝트로 변환
 		}).done(function(resp){
 			alert("회원가입이 완료되었습니다");
+			//console.log(resp);
+			location.href="/"; //메인페이지로 이동
+		}).fail(function(error){
+			alert(JSON.stringify(error));
+		}); 
+	},
+	
+	update: function() {
+		//alert('user의 save 함수 호출됨');
+		let data = {
+			id : $("#id").val(),
+			password : $("#password").val(),
+			email : $("#email").val()
+		};
+		
+		$.ajax({
+			type:"PUT",
+			url:"/user",
+			data:JSON.stringify(data), 
+			contentType:"application/json; charset=utf-8", 
+			dataType:"json" 
+		}).done(function(resp){
+			alert("회원수정이 완료되었습니다");
 			//console.log(resp);
 			location.href="/"; //메인페이지로 이동
 		}).fail(function(error){

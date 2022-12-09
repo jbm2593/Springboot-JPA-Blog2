@@ -45,6 +45,7 @@ let index = {
 		//alert('user의 save 함수 호출됨');
 		let data = {
 			id : $("#id").val(),
+			username : $("#username").val(),
 			password : $("#password").val(),
 			email : $("#email").val()
 		};

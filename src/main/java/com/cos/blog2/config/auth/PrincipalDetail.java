@@ -16,7 +16,6 @@ import lombok.Getter;
 @Data
 public class PrincipalDetail implements UserDetails{
 	private User user; // 콤포지션
-
 	// 생성자를 꼭 만들어줘야한다. 이걸 안만들면 스프링에서 기본적으로 제공하는 아이디와 비밀번호를 가지고옴
 	// 이걸 만들어야 우리의 USER 정보를 가져올 수 있음!!!!!
 	public PrincipalDetail(User user) {
@@ -74,6 +73,4 @@ public class PrincipalDetail implements UserDetails{
 		
 		return collectors;
 	}
-	
-	
 }

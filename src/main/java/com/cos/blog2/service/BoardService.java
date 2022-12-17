@@ -17,6 +17,7 @@ public class BoardService {
 	@Autowired
 	private BoardRepository boardRepository;
 
+	//글 작성 처리
 	@Transactional
 	public void 글쓰기(Board board, User user) { //title, content
 		board.setCount(0);
@@ -24,11 +25,13 @@ public class BoardService {
 		boardRepository.save(board);
 	}
 	
+	//게시글 리스트 처리
 	@Transactional(readOnly = true)
 	public Page<Board> 글목록(Pageable pageable){
 		return boardRepository.findAll(pageable);
 	}
 	
+	//게시글 상세보기 처리
 	@Transactional(readOnly = true)
 	public Board 글상세보기(int id) {
 		return boardRepository.findById(id)
@@ -37,11 +40,18 @@ public class BoardService {
 				});
 	}
 	
+	//게시글 검색 기능 처리
+	public Page<Board> 글검색기능(String searchKeyword, Pageable pageable) {
+		return boardRepository.findByTitleContaining(searchKeyword, pageable);
+	}
+	
+	//게시글 삭제 처리
 	@Transactional
 	public void 글삭제하기(int id) {
 		 boardRepository.deleteById(id);	
 	}
 	
+	//게시글 수정 처리
 	@Transactional
 	public void 글수정하기(int id, Board requestBoard) {
 		Board board = boardRepository.findById(id)

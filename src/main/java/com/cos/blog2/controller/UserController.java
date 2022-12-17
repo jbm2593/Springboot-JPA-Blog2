@@ -1,7 +1,9 @@
 package com.cos.blog2.controller;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 //인증 안된사람은 /auth를 타고 
 //인증된사람들은 /auth를 타지않음
@@ -18,13 +20,21 @@ public class UserController {
 		return "user/joinForm";
 	}
 	
-	@GetMapping("/auth/loginForm")
-	public String loginForm() {	
-		return "user/loginForm";
-	}
+//	@GetMapping("/auth/loginForm")
+//	public String loginForm() {	
+//		return "user/loginForm";
+//	}
 	
 	@GetMapping("/user/updateForm")
 	public String updateForm() {	
 		return "user/updateForm";
+	}
+	
+	@GetMapping("/auth/loginForm")
+	public String login(@RequestParam(value = "error", required = false) String error,
+			@RequestParam(value = "exception", required = false) String exception, Model model) {
+		model.addAttribute("error", error);
+		model.addAttribute("exception", exception);
+		return "/user/loginForm";
 	}
 }

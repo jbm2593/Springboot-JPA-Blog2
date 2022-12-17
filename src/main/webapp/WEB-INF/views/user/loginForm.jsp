@@ -15,6 +15,13 @@
 		</div>
 			
 		<button id="btn-login" class="btn btn-primary">로그인</button>
+		
+		<c:if test = "${not empty error}">
+				 <font color="red">
+		        <p>Your login attempt was not successful due to <br/>
+		        ${exception}</p>
+		        </font>
+    	</c:if>
 	</form>
 </div>
 

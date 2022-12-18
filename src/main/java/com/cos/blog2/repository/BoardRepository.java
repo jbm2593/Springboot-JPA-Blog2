@@ -3,6 +3,8 @@ package com.cos.blog2.repository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.cos.blog2.model.Board;
@@ -16,6 +18,10 @@ public interface BoardRepository extends JpaRepository<Board, Integer>{
 	 *  findBy(컬럼이름)Containing : 컬럼에서 키워드가 포함된 것을 찾겠다.
 	 */
 	Page<Board> findByTitleContaining(String searchKeyword, Pageable pageable);
+	
+	@Modifying
+    @Query("update Board p set p.count = p.count + 1 where p.id = :id")
+    int updateCount(int id);
 }
 
 

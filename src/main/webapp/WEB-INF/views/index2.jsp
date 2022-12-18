@@ -19,7 +19,7 @@
 		<thead>
 			<tr>
 				<th>No</th>
-				<th class="th-title">제목</th>
+				<th class="th-title">제목</th> 
 				<th>작성자</th>
 				<th>작성시간</th>
 				<th>조회수</th>
@@ -29,10 +29,11 @@
 			<c:forEach var="board" items="${boards.content}">
 				<tr class="odd gradeX">
 					<td><c:out value="${board.id}" /></td>
-					<td><c:out value="${board.title}" /></td>
+					<td><c:out value="${board.title}" /></td> 
 					<td><c:out value="${board.user.username}" /></td>
 					<td><fmt:formatDate pattern="yyyy-MM-dd" value="${board.createDate}"/></td>
 					<td><c:out value="${board.count}" /></td>
+					<td><a href="/board/${board.id}" class="btn btn-success">상세보기</a></td>
 				</tr>
 			</c:forEach>
 		</tbody>

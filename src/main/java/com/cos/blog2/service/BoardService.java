@@ -40,6 +40,12 @@ public class BoardService {
 				});
 	}
 	
+	//게시글 조회수 추가
+	@Transactional
+    public int updateCount(int id) {
+        return boardRepository.updateCount(id);
+    }
+	
 	//게시글 검색 기능 처리
 	public Page<Board> 글검색기능(String searchKeyword, Pageable pageable) {
 		return boardRepository.findByTitleContaining(searchKeyword, pageable);
@@ -62,5 +68,5 @@ public class BoardService {
 		board.setContent(requestBoard.getContent());
 		//해당 함수로 종료시 (Service가 종료될 때 트랜잭션이 종료된다. 이때 더티체킹 - 자동 업데이트가 됨. db flush
 	}
-
+	
 }

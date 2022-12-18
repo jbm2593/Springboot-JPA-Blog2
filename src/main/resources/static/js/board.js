@@ -3,10 +3,10 @@ let index = {
 		$("#btn-save").on("click", () => { //function(){} 대신에 ()=>{}는 this를 바인딩하기 위해서이다!
 			this.save();
 		});
-		$("#btn-delete").on("click", () => { //function(){} 대신에 ()=>{}는 this를 바인딩하기 위해서이다!
+		$("#btn-delete").on("click", () => {
 			this.deleteById();
 		});
-		$("#btn-update").on("click", () => { //function(){} 대신에 ()=>{}는 this를 바인딩하기 위해서이다!
+		$("#btn-update").on("click", () => { 
 			this.update();
 		});
 		//스프링 시큐리티로 로그인하려고 아래 주석처리
@@ -15,6 +15,7 @@ let index = {
 		//});
 	},
 	
+	//게시글 작성
 	save: function() {
 		//alert('user의 save 함수 호출됨');
 		let data = {
@@ -43,21 +44,29 @@ let index = {
 		}); 
 	},
 	
+	//게시글 삭제
 	deleteById: function() {	
 		let id = $("#id").text();
 		
-		$.ajax({
-			type:"DELETE",
-			url:"/api/board/"+id,
-			dataType:"json" 
-		}).done(function(resp){
-			alert("삭제가 완료되었습니다");
-			location.href="/"; 
-		}).fail(function(error){
-			alert(JSON.stringify(error));
-		}); 
+		if(confirm('정말 삭제 하시겠습니까?')) //확인 누르면 true, 취소 누르면 false
+		{		
+			$.ajax({
+				type:"DELETE",
+				url:"/api/board/"+id,
+				dataType:"json" 
+			}).done(function(resp){
+				alert("삭제가 완료되었습니다");
+				location.href="/"; 
+			}).fail(function(error){
+				alert(JSON.stringify(error));
+			}); 
+		}
+		else{
+			return false;
+		}
 	},
 	
+	//게시글 수정
 	update: function() {
 		let id = $("#id").val();
 		
@@ -65,19 +74,24 @@ let index = {
 			title : $("#title").val(),
 			content : $("#content").val()
 		};
-	
-		$.ajax({
-			type:"PUT",
-			url:"/api/board/"+id,
-			data:JSON.stringify(data), 
-			contentType:"application/json; charset=utf-8", 
-			dataType:"json" 
-		}).done(function(resp){
-			alert("글수정이 완료되었습니다");
-			location.href="/"; 
-		}).fail(function(error){
-			alert(JSON.stringify(error));
-		}); 
+		if(confirm('정말 수정 하시겠습니까?')) 
+		{
+			$.ajax({
+				type:"PUT",
+				url:"/api/board/"+id,
+				data:JSON.stringify(data), 
+				contentType:"application/json; charset=utf-8", 
+				dataType:"json" 
+			}).done(function(resp){
+				alert("글수정이 완료되었습니다");
+				location.href="/"; 
+			}).fail(function(error){
+				alert(JSON.stringify(error));
+			}); 
+		}
+		else{
+			return false;			
+		}	
 	},
 	
 	

@@ -21,6 +21,7 @@
 		</div>
 		
 	</form>
+	<button type="button" class="btn btn-secondary" onclick= "history.back()">뒤로가기</button>
 	<button id="btn-update" class="btn btn-primary">회원수정 완료</button>
 
 

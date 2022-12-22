@@ -14,13 +14,13 @@
 			<textarea class="form-control summernote" rows="5" id="content"></textarea>
 		</div>
 	</form>
+	<button type="button" class="btn btn-secondary" onclick= "history.back()">뒤로가기</button>
 	<button id="btn-save" class="btn btn-primary">글쓰기 완료</button>
-
 </div>
 
 <script>
 	$('.summernote').summernote({
-		placeholder : 'Hello Bootstrap 4',
+		placeholder : 'Enter content',
 		tabsize : 2,
 		height : 300
 	});

@@ -1,25 +1,23 @@
 package com.cos.blog2.controller.api;
 
-import javax.servlet.http.HttpSession;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.cos.blog2.config.auth.PrincipalDetail;
 import com.cos.blog2.dto.ResponseDto;
 import com.cos.blog2.model.User;
 import com.cos.blog2.service.UserService;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+@Api(tags = {"회원과 관련된 API"})
 @RestController
 public class UserApiController {
 	
@@ -32,6 +30,7 @@ public class UserApiController {
 	@Autowired
 	private AuthenticationManager authenticationManager;
 	
+	@ApiOperation(value = "회원가입 API", notes = "회원가입 역할을 합니다.")
 	@PostMapping("/auth/joinProc")
 	public ResponseDto<Integer> save(@RequestBody User user) { //username, password, email
 			System.out.println("UserApiController : save 함수 호출됨");
@@ -40,6 +39,7 @@ public class UserApiController {
 			 return new ResponseDto<Integer>(HttpStatus.OK.value(),1); //자바오브젝트를 JSON으로 변환해서 리턴(Jackson)
 	}
 	
+	@ApiOperation(value = "회원 수정 API", notes = "회원 수정 역할을 합니다.")
 	@PutMapping("/user")
 	public ResponseDto<Integer> update(@RequestBody User user){ // key = value, x-www-form-urlencoded 
 		userService.회원수정(user);

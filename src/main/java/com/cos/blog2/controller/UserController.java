@@ -46,6 +46,7 @@ public class UserController {
 		return "/user/loginForm";
 	}
 	
+	//카카오 로그인 구현
 	@GetMapping("/auth/kakao/callback")
 	public @ResponseBody String kakaoCallback(String code) { // Data를 리턴해주는 컨트롤러 함수
 		

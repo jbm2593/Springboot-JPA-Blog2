@@ -35,14 +35,14 @@ public class UserApiController {
 	public ResponseDto<Integer> save(@RequestBody User user) { //username, password, email
 			System.out.println("UserApiController : save 함수 호출됨");
 			
-			userService.회원가입(user);
+			userService.userJoin(user);
 			 return new ResponseDto<Integer>(HttpStatus.OK.value(),1); //자바오브젝트를 JSON으로 변환해서 리턴(Jackson)
 	}
 	
 	@ApiOperation(value = "회원 수정 API", notes = "회원 수정 역할을 합니다.")
 	@PutMapping("/user")
 	public ResponseDto<Integer> update(@RequestBody User user){ // key = value, x-www-form-urlencoded 
-		userService.회원수정(user);
+		userService.userEdit(user);
 
 		/*
 		 *여기서는 트랜잭션이 종료되기 때문에 DB에 값은 변경이 됐음.

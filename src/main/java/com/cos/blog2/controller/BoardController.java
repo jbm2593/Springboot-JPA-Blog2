@@ -25,10 +25,10 @@ public class BoardController {
 		public String index(Model model, @PageableDefault(size=6, sort="id", direction = Sort.Direction.DESC) Pageable pageable,
 												@RequestParam(value = "searchKeyword", required = false)String searchKeyword) {
 			if(searchKeyword == null) {
-				model.addAttribute("boards", boardService.글목록(pageable));
+				model.addAttribute("boards", boardService.boardList(pageable));
 			}
 			else {
-				model.addAttribute("boards", boardService.글검색기능(searchKeyword, pageable));
+				model.addAttribute("boards", boardService.boardSearch(searchKeyword, pageable));
 				model.addAttribute("searchKeyword", searchKeyword);
 			}
 			
@@ -40,14 +40,14 @@ public class BoardController {
 		@GetMapping("/board/{id}")
 		public String findById(@PathVariable int id, Model model) {
 			boardService.updateCount(id);
-			model.addAttribute("board", boardService.글상세보기(id));
+			model.addAttribute("board", boardService.boardDetail(id));
 			return "board/detail";
 		}
 		
 		//게시글 수정
 		@GetMapping("/board/{id}/updateForm")
 		public String updateForm(@PathVariable int id, Model model) {
-			model.addAttribute("board", boardService.글상세보기(id));
+			model.addAttribute("board", boardService.boardDetail(id));
 			return "board/updateForm";
 		}
 		

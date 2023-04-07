@@ -27,13 +27,13 @@ public class BoardService {
 	
 	//게시글 리스트 처리
 	@Transactional(readOnly = true)
-	public Page<Board> 글목록(Pageable pageable){
+	public Page<Board> boardList(Pageable pageable){
 		return boardRepository.findAll(pageable);
 	}
 	
 	//게시글 상세보기 처리
 	@Transactional(readOnly = true)
-	public Board 글상세보기(int id) {
+	public Board boardDetail(int id) {
 		return boardRepository.findById(id)
 				.orElseThrow(()->{
 					return new IllegalArgumentException("글 상세보기 실패 : 아이디를 찾을 수 없습니다.");
@@ -47,19 +47,19 @@ public class BoardService {
     }
 	
 	//게시글 검색 기능 처리
-	public Page<Board> 글검색기능(String searchKeyword, Pageable pageable) {
+	public Page<Board> boardSearch(String searchKeyword, Pageable pageable) {
 		return boardRepository.findByTitleContaining(searchKeyword, pageable);
 	}
 	
 	//게시글 삭제 처리
 	@Transactional
-	public void 글삭제하기(int id) {
+	public void boardDelete(int id) {
 		 boardRepository.deleteById(id);	
 	}
 	
 	//게시글 수정 처리
 	@Transactional
-	public void 글수정하기(int id, Board requestBoard) {
+	public void boardEdit(int id, Board requestBoard) {
 		Board board = boardRepository.findById(id)
 				.orElseThrow(()->{
 					return new IllegalArgumentException("글 찾기 실패 : 아이디를 찾을 수 없습니다.");

@@ -13,6 +13,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
+import com.cos.blog2.model.OAuthToken;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 //인증 안된사람은 /auth를 타고 
 //인증된사람들은 /auth를 타지않음
 
@@ -79,6 +84,20 @@ public class UserController {
 				String.class
 				);
 		
-		return "카카오 토큰 요청 완료 : 토큰요청에 대한 응답 :   " + response;
+		//@Gson, Json Simple, ObjectMapper
+		ObjectMapper objectMapper = new ObjectMapper();
+		OAuthToken oauthToken = null;
+		try {
+			oauthToken = objectMapper.readValue(response.getBody(), OAuthToken.class);
+		} catch (JsonMappingException e) {
+			e.printStackTrace();
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+		
+		System.out.println("카카오 엑세스 토큰 : " + oauthToken.getAccess_token());
+		
+		
+		return "카카오 토큰 요청 완료 : 토큰요청에 대한 응답 :   " + response.getBody();
 	}
 }

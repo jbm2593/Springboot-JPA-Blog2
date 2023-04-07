@@ -35,14 +35,14 @@ public class BoardApiController {
 	@ApiOperation(value = "게시글 삭제 API", notes = "게시글 삭제 역할을 합니다.")
 	@DeleteMapping("/api/board/{id}")
 	public ResponseDto<Integer> deleteById(@PathVariable int id){
-		boardService.글삭제하기(id);
+		boardService.boardDelete(id);
 		return new ResponseDto<Integer>(HttpStatus.OK.value(),1);
 	}
 	
 	@ApiOperation(value = "게시글 수정 API", notes = "게시글 수정 역할을 합니다.")
 	@PutMapping("/api/board/{id}")
 	public ResponseDto<Integer> update(@PathVariable int id, @RequestBody Board board){
-		boardService.글수정하기(id,board);
+		boardService.boardEdit(id,board);
 		return new ResponseDto<Integer>(HttpStatus.OK.value(),1); 
 	}
 }

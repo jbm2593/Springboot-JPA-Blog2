@@ -23,6 +23,16 @@ public class UserService {
 	@Autowired // DI가 되서 주입이 된다.
 	private BCryptPasswordEncoder encoder;
 	
+	//회원찾기 (카카오 회원가입시 가입자와 비가입자 분기 처리 사용)
+	@Transactional(readOnly = true)
+	public User userFind(String username) {
+		User user =  userRepository.findByUsername(username).orElseGet(()->{
+			return new User();
+		});
+		return user;
+	}
+	
+	//회원가입
 	@Transactional
 	public void userJoin(User user) {
 			String rawPassword = user.getPassword(); //원문
@@ -32,6 +42,7 @@ public class UserService {
 			userRepository.save(user);
 	}
 	
+	//회원수정
 	@Transactional
 	public void userEdit(User user) {
 		// 수정시에는 영속성 컨텍스트 User 오브젝트를 영속화시키고, 영속화된 User 오브젝트를 수정
@@ -40,10 +51,16 @@ public class UserService {
 		User porsistance = userRepository.findById(user.getId()).orElseThrow(()->{
 			return new IllegalArgumentException("회원 찾기 실패");
 		});
-		String rawPassword = user.getPassword();
-		String encPassword = encoder.encode(rawPassword);
-		porsistance.setPassword(encPassword);
-		porsistance.setEmail(user.getEmail());
+		
+		// Validate 체크 (ouath 필드에 값이 없으면 수정 가능)
+		// kakao로 회원가입 되어있지 않은 사람만 패스워드, 이메일 수정 가능.
+		if(porsistance.getOauth() == null || porsistance.getOauth().equals("")) {
+			String rawPassword = user.getPassword();
+			String encPassword = encoder.encode(rawPassword);
+			porsistance.setPassword(encPassword);
+			porsistance.setEmail(user.getEmail());
+		}
+
 		//회원수정 함수 종료시 = 서비스 종료 = 트랜잭션 종료 = commit이 자동으로 된다.
 		//영속화된 persistance 객체의 변화가 감지되면 더티체킹이 되어 변화된 것들을 update문을 자동으로 날려줌.
 }

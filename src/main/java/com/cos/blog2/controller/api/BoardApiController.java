@@ -11,13 +11,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cos.blog2.config.auth.PrincipalDetail;
+import com.cos.blog2.dto.ReplySaveRequestDto;
 import com.cos.blog2.dto.ResponseDto;
 import com.cos.blog2.model.Board;
+import com.cos.blog2.model.Reply;
 import com.cos.blog2.service.BoardService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 @Api(tags = {"게시글과 관련된 API"})
 @RestController
 public class BoardApiController {
@@ -28,7 +29,7 @@ public class BoardApiController {
 	@ApiOperation(value = "게시글 작성 API", notes = "게시글 작성 역할을 합니다.")
 	@PostMapping("/api/board")
 	public ResponseDto<Integer> save(@RequestBody Board board, @AuthenticationPrincipal PrincipalDetail principal) {
-			boardService.글쓰기(board, principal.getUser());
+			boardService.boardWrite(board, principal.getUser());
 			return new ResponseDto<Integer>(HttpStatus.OK.value(),1); //자바오브젝트를 JSON으로 변환해서 리턴(잭슨 라이브러리)
 	}
 	
@@ -44,5 +45,21 @@ public class BoardApiController {
 	public ResponseDto<Integer> update(@PathVariable int id, @RequestBody Board board){
 		boardService.boardEdit(id,board);
 		return new ResponseDto<Integer>(HttpStatus.OK.value(),1); 
+	}
+	
+//	@ApiOperation(value = "댓글 작성 API", notes = "댓글 작성 역할을 합니다.")
+//	@PostMapping("/api/board/{boardId}/reply")
+//	public ResponseDto<Integer> replySave(@PathVariable int boardId, @RequestBody Reply reply, @AuthenticationPrincipal PrincipalDetail principal) {
+//			boardService.replyWrite(principal.getUser(), boardId, reply);
+//			return new ResponseDto<Integer>(HttpStatus.OK.value(),1); //자바오브젝트를 JSON으로 변환해서 리턴(잭슨 라이브러리)
+//	}
+	
+	//데이터 받을 때 컨트롤러에서 dto 만들어서 받는게 좋다.
+	//dto 사용하지 않은 이유는!! 토이프로젝트이기 때문에 규모가 작아서 안만들었음.
+	//아래는 dto 사용해서 받음.
+	@PostMapping("/api/board/{boardId}/reply")
+	public ResponseDto<Integer> replySave(@RequestBody ReplySaveRequestDto replySaveRequestDto) {
+			boardService.replyWrite(replySaveRequestDto);
+			return new ResponseDto<Integer>(HttpStatus.OK.value(),1); 
 	}
 }

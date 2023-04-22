@@ -13,9 +13,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -48,7 +50,9 @@ public class Board {
 	private User user; //DB는 오브젝트를 저장할 수 없다. FK, 자바는 오브젝트를 저장할 수 있다.
 	
 	@OneToMany(mappedBy = "board", fetch = FetchType.EAGER)//하나의 게시글은 여러개의 답글을 가질 수 있다, mappedBy 연관관계의 주인이 아니다 (난 FK가 아니예요) DB에 컬럼을 만들지마라.
-	private List<Reply> reply;
+	@JsonIgnoreProperties({"board"}) //Reply에서 borad 다시 참조하는 무한참조 방지.
+	@OrderBy("id desc")
+	private List<Reply> replys;
 	
 	@CreationTimestamp
 	private Timestamp createDate;

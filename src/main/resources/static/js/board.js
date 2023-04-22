@@ -9,6 +9,9 @@ let index = {
 		$("#btn-update").on("click", () => { 
 			this.update();
 		});
+		$("#btn-reply-save").on("click", () => { 
+			this.replySave();
+		});
 		//스프링 시큐리티로 로그인하려고 아래 주석처리
 		//$("#btn-login").on("click", () => { //function(){} 대신에 ()=>{}는 this를 바인딩하기 위해서이다!
 			//this.login();
@@ -92,6 +95,29 @@ let index = {
 		else{
 			return false;			
 		}	
+	},
+	
+	//댓글 작성
+	replySave: function() {
+		let data = {
+			userId : $("#userId").val(),
+			boardId : $("#boardId").val(),
+			content : $("#reply-content").val()
+		};
+		let boardId2 = $("#boardId").val();
+
+		$.ajax({
+			type:"POST",
+			url: '/api/board/${data.boardId}/reply',
+			data:JSON.stringify(data), //위에 data는 자바스크립트 객체이다. 따라서 자바가 이해하기 위해서 json으로 변경을 해줘야한다.
+			contentType:"application/json; charset=utf-8", 
+			dataType:"json" 
+		}).done(function(resp){
+			alert("댓글작성이 완료되었습니다.");
+			location.href= "/board/"+boardId2;
+		}).fail(function(error){
+			alert(JSON.stringify(error));
+		}); 
 	},
 	
 	

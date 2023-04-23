@@ -114,4 +114,11 @@ public class BoardService {
 		int result = replyRepository.mSave(replySaveRequestDto.getUserId(), replySaveRequestDto.getBoardId(), replySaveRequestDto.getContent());
 		System.out.println("업데이트 갯수 : " + result);
 	}
+	
+	//댓글 삭제 처리
+	@Transactional
+	public void replyDelete(int replyId) {
+		replyRepository.deleteById(replyId);
+	}
+	
 }

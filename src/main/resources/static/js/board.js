@@ -120,8 +120,22 @@ let index = {
 		}); 
 	},
 	
-	
-	//스프링 시큐리티로 로그인하려고 아래 주석처리
+	//댓글삭제
+	replyDelete : function(boardId, replyId){
+			$.ajax({ 
+				type: "DELETE",
+				url: `/api/board/${boardId}/reply/${replyId}`,
+				dataType: "json"
+			}).done(function(resp){
+				alert("댓글삭제 성공");
+				location.href = `/board/${boardId}`;
+			}).fail(function(error){
+				alert(JSON.stringify(error));
+			}); 
+		},
+		
+		
+		//스프링 시큐리티로 로그인하려고 아래 주석처리
 	//login: function() {
 		//alert('user의 save 함수 호출됨');
 		//let data = {

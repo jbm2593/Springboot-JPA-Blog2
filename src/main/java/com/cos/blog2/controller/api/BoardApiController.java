@@ -14,7 +14,6 @@ import com.cos.blog2.config.auth.PrincipalDetail;
 import com.cos.blog2.dto.ReplySaveRequestDto;
 import com.cos.blog2.dto.ResponseDto;
 import com.cos.blog2.model.Board;
-import com.cos.blog2.model.Reply;
 import com.cos.blog2.service.BoardService;
 
 import io.swagger.annotations.Api;
@@ -57,9 +56,16 @@ public class BoardApiController {
 	//데이터 받을 때 컨트롤러에서 dto 만들어서 받는게 좋다.
 	//dto 사용하지 않은 이유는!! 토이프로젝트이기 때문에 규모가 작아서 안만들었음.
 	//아래는 dto 사용해서 받음.
+	@ApiOperation(value = "댓글 작성 API", notes = "댓글 작성 역할을 합니다.")
 	@PostMapping("/api/board/{boardId}/reply")
 	public ResponseDto<Integer> replySave(@RequestBody ReplySaveRequestDto replySaveRequestDto) {
 			boardService.replyWrite(replySaveRequestDto);
 			return new ResponseDto<Integer>(HttpStatus.OK.value(),1); 
+	}
+	
+	@DeleteMapping("api/board/{boardId}/reply/{replyId}")
+	public ResponseDto<Integer> replySave(@PathVariable int replyId) {
+		boardService.replyDelete(replyId);
+		return new ResponseDto<Integer>(HttpStatus.OK.value(),1); 
 	}
 }

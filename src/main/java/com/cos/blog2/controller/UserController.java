@@ -2,6 +2,7 @@ package com.cos.blog2.controller;
 
 import java.util.UUID;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -17,8 +18,11 @@ import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
+
+import com.cos.blog2.dto.DefaultMessageDto;
 import com.cos.blog2.model.KakaoProfile;
 import com.cos.blog2.model.OAuthToken;
 import com.cos.blog2.model.User;
@@ -46,7 +50,15 @@ public class UserController {
 	
 	@Autowired
 	private UserService userService;
+	
+	public OAuthToken oauthToken;
+	
+	private static final String SEND_SUCCESS_MSG = "메시지 전송에 성공했습니다.";
+	private static final String SEND_FAIL_MSG = "메시지 전송에 실패했습니다.";
 
+	private static final String SUCCESS_CODE = "0"; //kakao api에서 return해주는 success code 값
+
+	
 	@GetMapping("/auth/joinForm")
 	public String joinForm() {
 		return "user/joinForm";
@@ -70,7 +82,7 @@ public class UserController {
 		return "/user/loginForm";
 	}
 
-	// 카카오 로그인 구현
+	/* ************카카오 로그인 구현************* */
 	@GetMapping("/auth/kakao/callback")
 	public  String kakaoCallback(String code) { // Data를 리턴해주는 컨트롤러 함수
 
@@ -101,7 +113,7 @@ public class UserController {
 
 		// @Gson, Json Simple, ObjectMapper
 		ObjectMapper objectMapper = new ObjectMapper();
-		OAuthToken oauthToken = null;
+		oauthToken = null;
 		try {
 			oauthToken = objectMapper.readValue(response.getBody(), OAuthToken.class);
 		} catch (JsonMappingException e) {
@@ -112,6 +124,7 @@ public class UserController {
 
 		System.out.println("카카오 엑세스 토큰 : " + oauthToken.getAccess_token());
 
+		/* *****************카카오 사용자 정보 가져오기************** */
 		RestTemplate rt2 = new RestTemplate();
 
 		// HttpHeader 오브젝트 생성
@@ -168,5 +181,63 @@ public class UserController {
 		return "redirect:/";
 		
 		//return "카카오 토큰 요청 완료 : 토큰요청에 대한 응답 :   " + response2.getBody();
+	}
+	
+	/* *****************카카오 메시지 보내기( 나한테 보내기)************** */
+	@GetMapping("/auth/kakao/message")
+	public String kakaoMessage() { // Data를 리턴해주는 컨트롤러 함수
+		System.out.println("@@@@@카카오 메시지 보내기 컨트롤러 진입@@@@");
+		
+		DefaultMessageDto myMsg = new DefaultMessageDto();
+		myMsg.setBtnTitle("자세히보기");
+		myMsg.setMobileUrl("");
+		myMsg.setObjType("text");
+		myMsg.setWebUrl("");
+		myMsg.setText("메시지 테스트입니다.");
+		
+		JSONObject linkObj = new JSONObject();
+		linkObj.put("web_url", myMsg.getWebUrl());
+		linkObj.put("mobile_web_url", myMsg.getMobileUrl());
+		
+		System.out.println("myMsg : " + myMsg);
+		System.out.println("linkObj : " + linkObj);
+
+		JSONObject templateObj = new JSONObject();
+		templateObj.put("object_type", myMsg.getObjType());
+		templateObj.put("text", myMsg.getText());
+		templateObj.put("link", linkObj);
+		templateObj.put("button_title", myMsg.getBtnTitle());
+		
+		System.out.println("templateObj : " + templateObj);
+
+		
+		RestTemplate rt3 = new RestTemplate();
+		
+		System.out.println("카카오 메시지 보낼때 카카오 엑세스 토큰 : " + oauthToken.getAccess_token());
+		
+		// HttpHeader 오브젝트 생성
+		HttpHeaders headers3 = new HttpHeaders();
+		headers3.add("Authorization", "Bearer " + oauthToken.getAccess_token());
+		System.out.println("headers3 : " + headers3);
+		
+		// HttpBody 오브젝트 생성
+		MultiValueMap<String, String> params3 = new LinkedMultiValueMap<>();
+		params3.add("template_object", templateObj.toString());
+		System.out.println("params3 : " + params3);
+
+		// HttpHeader와 HttpBody를 하나의 오브젝트에 담기
+		HttpEntity<MultiValueMap<String, String>> kakaoMassegeRequest3 = new HttpEntity<>(params3, headers3);
+
+		// Http 요청하기 - POST 방식으로 - 그리고 response 변수의 응답 받음.
+		ResponseEntity<String> response3 = rt3.exchange("https://kapi.kakao.com/v2/api/talk/memo/default/send",
+				HttpMethod.POST, kakaoMassegeRequest3, String.class);
+		System.out.println(response3.getBody());
+		
+		String resultCode = "";
+		JSONObject jsonData = new JSONObject(response3.getBody());
+		resultCode = jsonData.get("result_code").toString();
+		System.out.println("*******resultCode **********: " + resultCode);
+		
+		return "redirect:/";
 	}
 }

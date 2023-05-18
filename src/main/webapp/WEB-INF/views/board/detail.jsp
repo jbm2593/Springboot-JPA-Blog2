@@ -32,7 +32,8 @@
 			<textarea id="reply-content" class="form-control" rows="1"></textarea>
 		</div>
 		<div class="card-footer">
-			<button type="button" id="btn-reply-save" class="btn btn-primary">댓글 등록</button>
+			<button type="button" id="btn-reply-save" class="btn btn-outline-warning">댓글 등록</button>
+			<a href="/auth/kakao/message" class="btn btn-outline-warning">카카오 알림 테스트</a>
 		</div>
 		</form>
 	</div>

@@ -32,8 +32,7 @@
 			<textarea id="reply-content" class="form-control" rows="1"></textarea>
 		</div>
 		<div class="card-footer">
-			<button type="button" id="btn-reply-save" class="btn btn-outline-warning">댓글 등록</button>
-			<a href="/auth/kakao/message" class="btn btn-outline-warning">카카오 알림 테스트</a>
+			<button type="button" id="btn-reply-save" class="btn btn-primary">댓글 등록</button>
 		</div>
 		</form>
 	</div>
@@ -50,6 +49,8 @@
 					<div class="d-flex">
 						<div class="font-italic">작성자 : ${reply.user.username} &nbsp;</div>
 						<button onClick="index.replyDelete(${board.id}, ${reply.id})" class="badge">삭제</button>
+						<a href="/auth/kakao/message" class="badge badge-pill badge-warning" style="margin-left: 10px;">카카오톡 전송(나한테)</a>
+						<a href="/auth/kakao/message/friends" class="badge badge-pill badge-warning" style="margin-left: 10px;">카카오톡 전송(친구한테)</a>
 					</div>
 				</li>
 			</c:forEach>

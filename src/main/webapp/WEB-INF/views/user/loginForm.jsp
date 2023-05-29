@@ -15,7 +15,7 @@
 		</div>
 			
 		<button id="btn-login" class="btn btn-primary">로그인</button>
-		<a href="https://kauth.kakao.com/oauth/authorize?client_id=1e39c72b841ef80ff98bcaa9af519295&redirect_uri=http://localhost:8000/auth/kakao/callback&response_type=code"><img src="/images/kakao_login_button.png" height="38px"></a>
+		<a href="https://kauth.kakao.com/oauth/authorize?client_id=1e39c72b841ef80ff98bcaa9af519295&redirect_uri=http://localhost:8000/auth/kakao/callback&response_type=code&scope=friends"><img src="/images/kakao_login_button.png" height="38px"></a>
 		<c:if test = "${not empty error}">
 				 <font color="red">
 		        <p>Your login attempt was not successful due to <br/>

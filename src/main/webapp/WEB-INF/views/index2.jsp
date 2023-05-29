@@ -3,7 +3,7 @@
 <%@ include file="layout/header.jsp"%>
 
 <div class="text-center banner">
-	 <a href="/"> <img src="/images/kyowon.jpg" style="width: auto; height:100px" class="banner-img"></a>
+	 <a href="/"> <img src="/images/ddalgi3-removebg-preview.png" style="width: 5%; height:5%" class="banner-img"></a>
 </div>
 
 <div class="container">

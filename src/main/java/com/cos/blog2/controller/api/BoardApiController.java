@@ -59,6 +59,7 @@ public class BoardApiController {
 	@ApiOperation(value = "댓글 작성 API", notes = "댓글 작성 역할을 합니다.")
 	@PostMapping("/api/board/{boardId}/reply")
 	public ResponseDto<Integer> replySave(@RequestBody ReplySaveRequestDto replySaveRequestDto) {
+			System.out.println("댓글작성 api 들어옴");
 			boardService.replyWrite(replySaveRequestDto);
 			return new ResponseDto<Integer>(HttpStatus.OK.value(),1); 
 	}

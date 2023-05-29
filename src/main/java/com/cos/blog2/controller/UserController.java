@@ -186,7 +186,7 @@ public class UserController {
 	/* *****************카카오 메시지 보내기( 나한테 보내기)************** */
 	@GetMapping("/auth/kakao/message")
 	public String kakaoMessage() { // Data를 리턴해주는 컨트롤러 함수
-		System.out.println("@@@@@카카오 메시지 보내기 컨트롤러 진입@@@@");
+		System.out.println("@@@@@카카오 메시지 보내기(나한테) 컨트롤러 진입@@@@");
 		
 		DefaultMessageDto myMsg = new DefaultMessageDto();
 		myMsg.setBtnTitle("자세히보기");
@@ -237,6 +237,31 @@ public class UserController {
 		JSONObject jsonData = new JSONObject(response3.getBody());
 		resultCode = jsonData.get("result_code").toString();
 		System.out.println("*******resultCode **********: " + resultCode);
+		
+		return "redirect:/";
+	}
+	
+	/* *****************카카오 메시지 보내기( 친구한테 보내기)************** */
+	// 1. 친구목록 가져오기 API 구현
+	
+	@GetMapping("/auth/kakao/message/friends")
+	public String kakaoMessageFriends() { // Data를 리턴해주는 컨트롤러 함수
+		System.out.println("@@@@@카카오 친구목록 가져오기 API 진입@@@@");
+		RestTemplate rt4 = new RestTemplate();
+		
+		// HttpHeader 오브젝트 생성
+		HttpHeaders headers4= new HttpHeaders();
+		headers4.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
+		headers4.add("Authorization", "Bearer " + oauthToken.getAccess_token());
+		// HttpHeader와 HttpBody를 하나의 오브젝트에 담기
+		HttpEntity<MultiValueMap<String, String>> kakaoFriendsListRequest = new HttpEntity<>(headers4);
+		
+		System.out.println("getAccess_token : " + oauthToken.getAccess_token());
+		System.out.println("kakaoFriendsListRequest : " + kakaoFriendsListRequest);
+		// Http 요청하기 - POST 방식으로 - 그리고 response 변수의 응답 받음.
+		ResponseEntity<String> response4 = rt4.exchange("https://kapi.kakao.com/v1/api/talk/friends", HttpMethod.GET,
+				kakaoFriendsListRequest, String.class);
+		System.out.println(response4.getBody());
 		
 		return "redirect:/";
 	}

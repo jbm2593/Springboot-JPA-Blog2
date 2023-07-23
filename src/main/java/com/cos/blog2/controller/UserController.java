@@ -1,7 +1,8 @@
 package com.cos.blog2.controller;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
-
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,16 +19,16 @@ import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
-
 import com.cos.blog2.dto.DefaultMessageDto;
+import com.cos.blog2.dto.FriendsMessageDto;
 import com.cos.blog2.model.KakaoProfile;
 import com.cos.blog2.model.OAuthToken;
 import com.cos.blog2.model.User;
 import com.cos.blog2.service.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -110,6 +111,8 @@ public class UserController {
 		// Http 요청하기 - POST 방식으로 - 그리고 response 변수의 응답 받음.
 		ResponseEntity<String> response = rt.exchange("https://kauth.kakao.com/oauth/token", HttpMethod.POST,
 				kakaoTokenRequest, String.class);
+		
+		System.out.println("response : " + response);
 
 		// @Gson, Json Simple, ObjectMapper
 		ObjectMapper objectMapper = new ObjectMapper();
@@ -121,9 +124,11 @@ public class UserController {
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
-
+	
+		System.out.println("oauthToken : " + oauthToken);
 		System.out.println("카카오 엑세스 토큰 : " + oauthToken.getAccess_token());
-
+	
+		
 		/* *****************카카오 사용자 정보 가져오기************** */
 		RestTemplate rt2 = new RestTemplate();
 
@@ -150,6 +155,7 @@ public class UserController {
 		}
 		
 		// User 오브젝트 : username, passwword, email
+		System.out.println("kakaoProfile : " + kakaoProfile);
 		 System.out.println("카카오 아이디(번호) : " + kakaoProfile.getId());
 		 System.out.println("카카오 이메일 : " + kakaoProfile.getKakao_account().getEmail());
 		 System.out.println("블로그서버 유저네임 : " + kakaoProfile.getKakao_account().getEmail() + "_" + kakaoProfile.getId());
@@ -210,7 +216,6 @@ public class UserController {
 		
 		System.out.println("templateObj : " + templateObj);
 
-		
 		RestTemplate rt3 = new RestTemplate();
 		
 		System.out.println("카카오 메시지 보낼때 카카오 엑세스 토큰 : " + oauthToken.getAccess_token());
@@ -261,8 +266,101 @@ public class UserController {
 		// Http 요청하기 - POST 방식으로 - 그리고 response 변수의 응답 받음.
 		ResponseEntity<String> response4 = rt4.exchange("https://kapi.kakao.com/v1/api/talk/friends", HttpMethod.GET,
 				kakaoFriendsListRequest, String.class);
-		System.out.println(response4.getBody());
+		System.out.println("response4 정보 : " + response4.getBody());
 		
-		return "redirect:/";
+		ObjectMapper objectMapper4 = new ObjectMapper();
+		objectMapper4.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);		
+		
+		FriendsMessageDto receiverUuids = null;
+
+		try {
+			//List<FriendsMessageDto> receiverUuids  = Arrays.asList(objectMapper4.readValue(response4.getBody(), FriendsMessageDto[].class));	
+			// JSON 파일을 Java 객체로 deserialization (역직렬화) 하기 위해서는 ObjectMapper의 readValue() 메서드를 이용한다.
+			receiverUuids = objectMapper4.readValue(response4.getBody(), FriendsMessageDto.class);	
+			System.out.println(" receiverUuids  : " + receiverUuids);
+			
+			if (receiverUuids != null) {
+			    System.out.println("receiverUuids 정보: " + receiverUuids);
+			} else {
+			    System.out.println("receiverUuids 객체가 null입니다.");
+			}
+
+	
+
+			
+			
+		} catch (JsonMappingException e) {
+			System.out.println("오류 예외처리 1 들어옴");
+			e.printStackTrace();
+		} catch (JsonProcessingException e) {
+			System.out.println("오류 예외처리 2 들어옴");
+			e.printStackTrace();			
+		}
+		
+//		System.out.println(" receiverUuids 정보 : " + receiverUuids);
+//		System.out.println(" receiverUuids UUID : " + receiverUuids.getElements().getUuid());
+//		System.out.println(" getFavorite_count : " + receiverUuids.getFavorite_count());
+//		System.out.println(" getId : " + receiverUuids.getElements().getId());
+
+		
+		// 2. 카카오 메시지 보내기(친구한테) API 구현
+		/* *****************카카오 메시지 보내기( 친구한테 보내기)************** */
+		System.out.println("@@@@@카카오 메시지 보내기(친구한테) 진입@@@@");
+		
+		DefaultMessageDto myMsg = new DefaultMessageDto();
+		myMsg.setBtnTitle("자세히보기");
+		myMsg.setMobileUrl("");
+		myMsg.setObjType("text");
+		myMsg.setWebUrl("");
+		myMsg.setText("테스트메시지 갔니.");
+		
+		JSONObject linkObj = new JSONObject();
+		linkObj.put("web_url", myMsg.getWebUrl());
+		linkObj.put("mobile_web_url", myMsg.getMobileUrl());
+		
+		System.out.println("myMsg : " + myMsg);
+		System.out.println("linkObj : " + linkObj);
+
+		JSONObject templateObj = new JSONObject();
+		templateObj.put("object_type", myMsg.getObjType());
+		templateObj.put("text", myMsg.getText());
+		templateObj.put("link", linkObj);
+		templateObj.put("button_title", myMsg.getBtnTitle());
+			
+		System.out.println("templateObj : " + templateObj);
+		
+		//JSONObject receiverUuids = new JSONObject();
+		//receiverUuids.put("uuid", receiverUuids());
+		
+		RestTemplate rt5 = new RestTemplate();
+			
+		System.out.println("카카오 메시지(친구) 보낼때 카카오 엑세스 토큰 : " + oauthToken.getAccess_token());
+			
+		// HttpHeader 오브젝트 생성
+		HttpHeaders headers5 = new HttpHeaders();
+		headers5.add("Authorization", "Bearer " + oauthToken.getAccess_token());
+		System.out.println("headers5 : " + headers5);
+			
+		// HttpBody 오브젝트 생성
+		MultiValueMap<String, String> params5 = new LinkedMultiValueMap<>();
+		params5.add("template_object", templateObj.toString());
+		//params5.add("receiver_uuids", receiverUuids.toString());
+		System.out.println("params5 : " + params5);
+
+		// HttpHeader와 HttpBody를 하나의 오브젝트에 담기
+		HttpEntity<MultiValueMap<String, String>> kakaoMassegeRequest5 = new HttpEntity<>(params5, headers5);
+
+		// Http 요청하기 - POST 방식으로 - 그리고 response 변수의 응답 받음.
+		ResponseEntity<String> response5 = rt5.exchange("https://kapi.kakao.com/v1/api/talk/friends/message/default/send",
+		HttpMethod.POST, kakaoMassegeRequest5, String.class);
+		
+		System.out.println(response5.getBody());
+			
+		String resultCode = "";
+		JSONObject jsonData = new JSONObject(response5.getBody());
+		resultCode = jsonData.get("result_code").toString();
+		System.out.println("*******resultCode **********: " + resultCode);
+			
+		return "redirect:/";	
 	}
 }
